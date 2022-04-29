@@ -7,36 +7,17 @@ const listImagesMarkup = createListImagesMarkup(galleryItems);
 
 galleryContainer.addEventListener("click", handleImgClick);
 
-function handleImgClick(event) {
-  event.preventDefault();
-  if (event.target.nodeName !== "IMG") {
-    return;
-  }
-
-  // galleryItems.map((items) => item);
-
-  const instance = basicLightbox
-    .create(
-      `<img src="https://cdn.pixabay.com/photo/2019/05/14/16/43/himilayan-blue-poppy-4202825_1280.jpg" width="800" height="600">`
-    )
-    // closable: true,
-    .show();
-  console.log(instance);
-}
-
-// Замена значения атрибута src элемента <img> в модальном окне перед открытием.
-
 function createListImagesMarkup(images) {
   return images
     .map(
-      (imgItem) => `
+      ({ original, preview, description }) => `
       <div class="gallery__item">
-        <a class="gallery__link" href="${imgItem.original}">
+        <a class="gallery__link" href="${original}">
           <img
             class="gallery__image"
-            src="${imgItem.preview}"
-            data-source="${imgItem.original}"
-            alt="${imgItem.description}"
+            src="${preview}"
+            data-source="${original}"
+            alt="${description}"
           />
         </a>
       </div>`
@@ -46,8 +27,15 @@ function createListImagesMarkup(images) {
 
 galleryContainer.innerHTML = listImagesMarkup;
 
-//Модальне вікно зі збільшеним зображенням повинне відкриватися виключно при натисканні на саме зображення (робіть перевірку на те, куди припав клік користувача, всередині функції, що відповідає за відкриття модального вікна)
+function handleImgClick(event) {
+  event.preventDefault();
 
-//* const images = document.getElementsByTagName('img');
-//* const sources = Array.from(images, image => image.src);
-//* const insecureSources = sources.filter(link => link.startsWith('http://'));
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+  basicLightbox
+    .create(
+      `<img src="${event.target.dataset.source}" width="800" height="600">`
+    )
+    .show();
+}
